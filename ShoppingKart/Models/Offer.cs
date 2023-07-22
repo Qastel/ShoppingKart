@@ -1,6 +1,6 @@
 ﻿using ShoppingKart.Interfaces;
 
-namespace ShoppingKart.Concrete
+namespace ShoppingKart.Models
 {
     public class Offer : IOffer
     {
@@ -13,12 +13,9 @@ namespace ShoppingKart.Concrete
             this.offerPrice = offerPrice;
         }
 
-        public double GetOfferPrice(int quantity)
+        public double GetTotalOfferPrice(int totalQuantity)
         {
-            int offerApplications = quantity / Quantity;
-            int remainingItems = quantity % Quantity;
-
-            return offerApplications * offerPrice + remainingItems * offerPrice;
+            return totalQuantity / Quantity * offerPrice;
         }
 
 

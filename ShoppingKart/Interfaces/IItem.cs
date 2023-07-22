@@ -9,6 +9,7 @@ namespace ShoppingKart.Interfaces
     public interface IItem
     {
         char SKU { get; }
-        double GetPrice();
+        double Price { get; }
+        public IOffer? Offer { get; }
     }
 }

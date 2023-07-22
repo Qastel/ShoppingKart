@@ -9,6 +9,6 @@ namespace ShoppingKart.Interfaces
     public interface IOffer
     {
         int Quantity { get; }
-        double GetOfferPrice(int quantity);
+        double GetTotalOfferPrice(int quantity);
     }
 }

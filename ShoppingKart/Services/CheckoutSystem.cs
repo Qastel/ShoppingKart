@@ -1,23 +1,23 @@
-﻿using ShoppingKart.Interfaces;
-namespace ShoppingKart.Concrete
+﻿using ShoppingKart.Concrete;
+using ShoppingKart.Interfaces;
+
+namespace ShoppingKart.Services
 {
 
     public class CheckoutSystem : ICheckoutSystem
     {
-        private readonly IDictionary<char, IItem> priceTable;
-        private readonly IDictionary<char, IOffer> ?offerTable;
+        private readonly IDictionary<char, IItem> itemTable;
         private readonly IDictionary<char, int> scannedItems;
 
-        public CheckoutSystem(IDictionary<char, IItem> priceTable, IDictionary<char, IOffer> ?offerTable)
+        public CheckoutSystem(IDictionary<char, IItem> itemTable)
         {
-            this.priceTable = priceTable;
-            this.offerTable = offerTable;
+            this.itemTable = itemTable;
             scannedItems = new Dictionary<char, int>();
         }
 
         public void Scan(char item)
         {
-            if (!priceTable.ContainsKey(item))
+            if (!itemTable.ContainsKey(item))
             {
                 throw new InvalidItemException($"Invalid item: {item}");
             }
@@ -39,18 +39,17 @@ namespace ShoppingKart.Concrete
                 char item = itemEntry.Key;
                 int quantity = itemEntry.Value;
 
-                if (offerTable!= null && offerTable.ContainsKey(item))
+                if (itemTable[item].Offer != null)
                 {
-                    IOffer offer = offerTable[item];
-                    double itemPrice = priceTable[item].GetPrice();
-                    double offerPrice = offer.GetOfferPrice(quantity);
-
-                    totalPrice += offerPrice;
-                    totalPrice += quantity % offer.Quantity * itemPrice;
+                    IOffer offer = itemTable[item].Offer;
+                    double itemPrice = itemTable[item].Price;
+                    double totalOfferPrice = offer.GetTotalOfferPrice(quantity);
+                   
+                    totalPrice += totalOfferPrice + (quantity % offer.Quantity * itemPrice);
                 }
                 else
                 {
-                    totalPrice += quantity * priceTable[item].GetPrice();
+                    totalPrice += quantity * itemTable[item].Price;
                 }
             }
 
